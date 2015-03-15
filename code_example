@@ -1,0 +1,121 @@
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cross_validation import train_test_split
+from pandas import read_csv
+import numpy as np
+import ml_metrics
+import pylab as pl
+from sklearn.metrics import roc_curve
+import matplotlib.pyplot as plt
+
+"""------------------------------------------------------------------------------"""
+
+#Part 1. Data mining
+
+#open the file
+dataset = read_csv(filename,';',error_bad_lines=False, index_col=False,dtype='unicode')
+dataset.head()
+
+#number of open_time != number of click-time. We should create combined column resulted to actions
+
+#set all open_time to 1 if value is not null and 0 if it is.
+dataset.open_time[dataset.open_time.notnull()]=1
+dataset.click_time[dataset.click_time.notnull()]=1
+
+#set all click time to 1 if value is not null
+dataset.open_time[dataset.open_time.isnull()]=0
+
+#if click_time is null but corresponding open_time is not null then we put open_time value to null click_time value
+dataset.click_time[dataset.click_time.isnull()]=dataset.open_time[dataset.click_time.isnull()].astype(np.float32)
+
+#calculated how much unique mail_type we have
+print("Уникальных типов писем: ", dataset.mail_type.drop_duplicates().count(),"Всего типов писем: ", dataset.mail_type.count())
+dataset.fillna(0,axis=0, method=None, inplace=True)
+
+#array with unique types
+unique_mails=np.unique(dataset.mail_type.values.ravel())
+
+#change all text mail_type to according numbers
+i=0
+while i<dataset.mail_type.drop_duplicates().count():
+    dataset['mail_type'].replace(unique_mails[i], i, inplace=True)
+    i=i+1
+
+#drop all irrelevant text data
+dataset_norm=dataset.drop(['mail_id','campaign_id', 'open_time','send_time','sex','first_mail_recieved_at'], axis=1).reset_index()
+
+#set all data to float type for further analysis
+dataset_norm=dataset_norm.astype(np.float32)
+
+#dataset_norm.to_csv(r'C:\Users\Пашка\Workspace\click_model\src\norm_data.csv', sep=';',encoding='utf-8')
+
+"""------------------------------------------------------------------------------"""
+
+#Part2. Analysis
+
+#check correlation between parameters. There is no strong correlation between components
+dataset_norm.corr()
+
+
+#divide initial table into 'target' table - click results, 'train' table - for learning
+target=dataset_norm.click_time.values
+train=dataset_norm.drop('click_time', axis=1).values
+
+#Each table we divide into 2 - one for testing ('test'), the other is for learning ('train')
+tr_train, tr_test, targ_train, targ_test = train_test_split(train, target, test_size=0.3, random_state=0)
+
+#There are our models
+models = []
+models.append(RandomForestClassifier(n_estimators=165, max_depth=4, criterion='entropy'))
+models.append(GradientBoostingClassifier(max_depth =4))
+models.append(KNeighborsClassifier(n_neighbors=20))
+models.append(GaussianNB())
+
+#Build the ROC graph to see the best model and whether we have some good forecasting ability of any model
+
+plt.figure(figsize=(10, 10)) 
+roc_auc_results=[]
+for model in models:
+    model.fit(tr_train, targ_train)
+    pred_scr = model.predict_proba(tr_test)[:, 1]
+    fpr, tpr, thresholds = roc_curve(targ_test, pred_scr)
+    roc_auc = ml_metrics.auc(targ_test, pred_scr)
+    md = str(model)
+    md = md[:md.find('(')]
+    pl.plot(fpr, tpr, label='ROC fold %s (auc = %0.2f)' % (md, roc_auc))
+    roc_auc_results.append(roc_auc)
+
+
+pl.plot([0, 1], [0, 1], '--', color=(0.6, 0.6, 0.6))
+pl.xlim([0, 1])
+pl.ylim([0, 1])
+pl.xlabel('False Positive Rate')
+pl.ylabel('True Positive Rate')
+pl.title('Receiver operating characteristic example')
+pl.legend(loc="lower right")
+pl.show()
+
+test=dataset_norm.drop('click_time', axis=1).values
+
+#choose the best model automatically
+
+i=0
+k=0 #number of the best model
+for j in roc_auc_results:
+    if roc_auc_results[i]==max(roc_auc_results):
+        k=k+1
+    i=i+1
+
+#Teach the model
+model = models[k]
+model.fit(train, target)
+
+"""------------------------------------------------------------------------------"""
+
+#Part3	. Result
+
+#Result
+dataset_norm.click_time = model.predict(test)
+
+dataset_norm.to_csv(filename, sep=';',encoding='utf-8')   
