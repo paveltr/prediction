@@ -1,0 +1,594 @@
+Sub Button1_Click()
+
+
+Dim stops, TH, pit, head, sh_width, sh_depth As Long
+
+Dim columns As Integer
+
+Dim load(1) As Integer
+    load(0) = 400
+    load(1) = 1000
+
+Dim speed(1) As Currency
+    speed(0) = 1
+    speed(1) = 1.6
+    
+Dim type_car(1) As String
+    type_car(0) = "Wide"
+    type_car(1) = "Deep"
+    
+Dim type_door(1) As String
+    type_door(0) = "Left"
+    type_door(1) = "Central"
+    
+Dim FF(1) As String
+    FF(0) = "Yes"
+    FF(1) = "No"
+    
+Dim EI(1) As String
+    EI(0) = "E30"
+    EI(1) = "EI60"
+    
+Dim car_door_design(1) As String
+    car_door_design(0) = "Painted"
+    car_door_design(1) = "Stainless steel"
+    
+Dim car_ceiling(1) As String
+    car_ceiling(0) = "Painted"
+    car_ceiling(1) = "Stainless steel"
+
+Dim door_close(1) As String
+    door_close(0) = "Yes"
+    door_close(1) = "No"
+    
+Dim FB(1) As String
+    FB(0) = "Yes"
+    FB(1) = "No"
+    
+Dim FC(1) As String
+    FC(0) = "Yes"
+    FC(1) = "No"
+    
+Dim shaft_door(1) As String
+    shaft_door(0) = "Painted"
+    shaft_door(1) = "Stainless steel"
+
+Dim CW_position(1) As String
+    CW_position(0) = "Back of the car"
+    CW_position(1) = "Side"
+
+Dim releveling(1) As String
+    releveling(0) = "Yes"
+    releveling(1) = "No"
+
+Dim seismic(1) As String
+    seismic(0) = "Yes"
+    seismic(1) = "No"
+    
+
+
+
+UI.Cells(15, 19) = 1.4
+UI.Cells(15, 20) = 1.4
+UI.Cells(16, 19) = 3.6
+UI.Cells(16, 20) = 3.6
+columns = 0
+
+Dim arr(1 To 1000000, 1 To 28)
+
+
+
+  'Application.ScreenUpdating = False
+  
+' for first lift in the group
+    
+For k = 0 To 1  ' load
+
+
+UI.Cells(9, 19).Value = load(k)
+
+    If load(k) = 400 Then  ' from here
+        UI.Cells(17, 19).Value = "Deep"
+                
+        For a = 0 To 1 ' speed
+            UI.Cells(10, 19).Value = speed(a)
+                    
+            For c = 0 To 1 ' door opening
+                UI.Cells(18, 19).Value = type_door(c)
+                UI.Cells(19, 19).Value = "No"
+                For e = 0 To 1 ' EI
+                    UI.Cells(20, 19).Value = EI(e)
+                    For f = 0 To 1 ' car_door_design
+                        UI.Cells(21, 19).Value = car_door_design(f)
+                        UI.Cells(22, 19).Value = car_ceiling(f)
+                        UI.Cells(27, 19).Value = shaft_door(f)
+                        UI.Cells(24, 19).Value = "No"
+                                    For r = 0 To 1 ' CW_position
+                                        If CW_position(r) = "Back of the car" Then
+                                            UI.Cells(29, 19).Value = 1750
+                                            UI.Cells(30, 19).Value = 1550
+                                        Else
+                                            UI.Cells(29, 19).Value = 1550
+                                            UI.Cells(30, 19).Value = 1750
+                                        End If
+                                            UI.Cells(31, 19).Value = CW_position(r)
+                                        For z = 0 To 1 ' seismic
+                                            UI.Cells(34, 19).Value = seismic(z)
+                                            TH = 6
+                                                            
+                                            For offset = 2 To 26
+                                                            
+                                                UI.Cells(11, 19).Value = offset
+
+                                                UI.Cells(14, 19).Value = TH
+ 
+                                                MyArr = Array()
+                                                MyArr2 = Array(UI.Cells(9, 19), UI.Cells(10, 19), UI.Cells(11, 19), UI.Cells(12, 19), UI.Cells(13, 19), UI.Cells(14, 19), UI.Cells(15, 19), UI.Cells(16, 19), UI.Cells(17, 19), UI.Cells(18, 19), UI.Cells(19, 19), UI.Cells(20, 19), UI.Cells(21, 19), UI.Cells(22, 19), UI.Cells(23, 19), UI.Cells(24, 19), UI.Cells(25, 19), UI.Cells(26, 19), UI.Cells(27, 19), UI.Cells(28, 19), UI.Cells(29, 19), UI.Cells(30, 19), UI.Cells(31, 19), UI.Cells(32, 19), UI.Cells(33, 19), UI.Cells(34, 19), UI.Cells(35, 19), 1)
+
+                                                arr(1 + columns, 1) = MyArr2(0)
+                                                arr(1 + columns, 2) = MyArr2(1)
+                                                arr(1 + columns, 3) = MyArr2(2)
+                                                arr(1 + columns, 4) = MyArr2(3)
+                                                arr(1 + columns, 5) = MyArr2(4)
+                                                arr(1 + columns, 6) = MyArr2(5)
+                                                arr(1 + columns, 7) = MyArr2(6)
+                                                arr(1 + columns, 8) = MyArr2(7)
+                                                arr(1 + columns, 9) = MyArr2(8)
+                                                arr(1 + columns, 10) = MyArr2(9)
+                                                arr(1 + columns, 11) = MyArr2(10)
+                                                arr(1 + columns, 12) = MyArr2(11)
+                                                arr(1 + columns, 13) = MyArr2(12)
+                                                arr(1 + columns, 14) = MyArr2(13)
+                                                arr(1 + columns, 15) = MyArr2(14)
+                                                arr(1 + columns, 16) = MyArr2(15)
+                                                arr(1 + columns, 17) = MyArr2(16)
+                                                arr(1 + columns, 18) = MyArr2(17)
+                                                arr(1 + columns, 19) = MyArr2(18)
+                                                arr(1 + columns, 20) = MyArr2(19)
+                                                arr(1 + columns, 21) = MyArr2(20)
+                                                arr(1 + columns, 22) = MyArr2(21)
+                                                arr(1 + columns, 23) = MyArr2(22)
+                                                arr(1 + columns, 24) = MyArr2(23)
+                                                arr(1 + columns, 25) = MyArr2(24)
+                                                arr(1 + columns, 26) = MyArr2(25)
+                                                arr(1 + columns, 27) = MyArr2(26)
+                                                arr(1 + columns, 28) = MyArr2(27)
+                                                MyArr = Array(arr(1 + columns, 1), arr(1 + columns, 2), arr(1 + columns, 3), arr(1 + columns, 4), arr(1 + columns, 5), arr(1 + columns, 6), arr(1 + columns, 7), arr(1 + columns, 8), arr(1 + columns, 9), arr(1 + columns, 10), arr(1 + columns, 11), arr(1 + columns, 12), arr(1 + columns, 13), arr(1 + columns, 14), arr(1 + columns, 15), arr(1 + columns, 16), arr(1 + columns, 17), arr(1 + columns, 18), arr(1 + columns, 19), arr(1 + columns, 20), arr(1 + columns, 21), arr(1 + columns, 22), arr(1 + columns, 23), arr(1 + columns, 24), arr(1 + columns, 25), arr(1 + columns, 26), arr(1 + columns, 27), arr(1 + columns, 28))
+
+                                                Sheet1.Range(Sheet1.Cells(5 + columns, 2), Sheet1.Cells(5 + columns, 29)) = MyArr
+                                                columns = columns + 1
+                                                TH = TH + 3
+                                                    
+                                            Next offset
+                                        Next z
+                                    Next r
+                               
+                            
+                        Next f
+                    Next e
+                Next c
+            Next a
+    End If
+
+    If load(k) = 1000 Then
+        For b = 0 To 1
+            If type_car(b) = "Deep" Then
+                    
+                For a = 0 To 1 ' speed
+                UI.Cells(10, 19).Value = speed(a)
+                    
+                UI.Cells(17, 19).Value = type_car(b)
+                UI.Cells(29, 19).Value = 1750
+                UI.Cells(30, 19).Value = 2550
+                For c = 0 To 1 ' door opening
+                    UI.Cells(18, 19).Value = type_door(c)
+                    For d = 0 To 1 ' FF
+                        UI.Cells(19, 19).Value = FF(d)
+                         For e = 0 To 1 ' EI
+                         UI.Cells(20, 19).Value = EI(e)
+                        For f = 0 To 1 ' car_door_design
+                            UI.Cells(21, 19).Value = car_door_design(f)
+                            UI.Cells(22, 19).Value = car_ceiling(f)
+                            UI.Cells(27, 19).Value = shaft_door(f)
+                            
+                                For o = 0 To 1 ' FB
+                                    UI.Cells(24, 19).Value = FB(o)
+                                    UI.Cells(31, 19).Value = "Side"
+                                    For z = 0 To 1 ' seismic
+                                        UI.Cells(34, 19).Value = seismic(z)
+                                        TH = 6
+                                                            
+                                        For offset = 2 To 26
+                                                            
+                                            UI.Cells(11, 19).Value = offset
+   
+                                            UI.Cells(14, 19).Value = TH
+
+                                            MyArr = Array()
+                                            MyArr2 = Array()
+                                            
+                                                MyArr2 = Array(UI.Cells(9, 19), UI.Cells(10, 19), UI.Cells(11, 19), UI.Cells(12, 19), UI.Cells(13, 19), UI.Cells(14, 19), UI.Cells(15, 19), UI.Cells(16, 19), UI.Cells(17, 19), UI.Cells(18, 19), UI.Cells(19, 19), UI.Cells(20, 19), UI.Cells(21, 19), UI.Cells(22, 19), UI.Cells(23, 19), UI.Cells(24, 19), UI.Cells(25, 19), UI.Cells(26, 19), UI.Cells(27, 19), UI.Cells(28, 19), UI.Cells(29, 19), UI.Cells(30, 19), UI.Cells(31, 19), UI.Cells(32, 19), UI.Cells(33, 19), UI.Cells(34, 19), UI.Cells(35, 19), 1)
+
+                                                arr(1 + columns, 1) = MyArr2(0)
+                                                arr(1 + columns, 2) = MyArr2(1)
+                                                arr(1 + columns, 3) = MyArr2(2)
+                                                arr(1 + columns, 4) = MyArr2(3)
+                                                arr(1 + columns, 5) = MyArr2(4)
+                                                arr(1 + columns, 6) = MyArr2(5)
+                                                arr(1 + columns, 7) = MyArr2(6)
+                                                arr(1 + columns, 8) = MyArr2(7)
+                                                arr(1 + columns, 9) = MyArr2(8)
+                                                arr(1 + columns, 10) = MyArr2(9)
+                                                arr(1 + columns, 11) = MyArr2(10)
+                                                arr(1 + columns, 12) = MyArr2(11)
+                                                arr(1 + columns, 13) = MyArr2(12)
+                                                arr(1 + columns, 14) = MyArr2(13)
+                                                arr(1 + columns, 15) = MyArr2(14)
+                                                arr(1 + columns, 16) = MyArr2(15)
+                                                arr(1 + columns, 17) = MyArr2(16)
+                                                arr(1 + columns, 18) = MyArr2(17)
+                                                arr(1 + columns, 19) = MyArr2(18)
+                                                arr(1 + columns, 20) = MyArr2(19)
+                                                arr(1 + columns, 21) = MyArr2(20)
+                                                arr(1 + columns, 22) = MyArr2(21)
+                                                arr(1 + columns, 23) = MyArr2(22)
+                                                arr(1 + columns, 24) = MyArr2(23)
+                                                arr(1 + columns, 25) = MyArr2(24)
+                                                arr(1 + columns, 26) = MyArr2(25)
+                                                arr(1 + columns, 27) = MyArr2(26)
+                                                arr(1 + columns, 28) = MyArr2(27)
+                                                MyArr = Array(arr(1 + columns, 1), arr(1 + columns, 2), arr(1 + columns, 3), arr(1 + columns, 4), arr(1 + columns, 5), arr(1 + columns, 6), arr(1 + columns, 7), arr(1 + columns, 8), arr(1 + columns, 9), arr(1 + columns, 10), arr(1 + columns, 11), arr(1 + columns, 12), arr(1 + columns, 13), arr(1 + columns, 14), arr(1 + columns, 15), arr(1 + columns, 16), arr(1 + columns, 17), arr(1 + columns, 18), arr(1 + columns, 19), arr(1 + columns, 20), arr(1 + columns, 21), arr(1 + columns, 22), arr(1 + columns, 23), arr(1 + columns, 24), arr(1 + columns, 25), arr(1 + columns, 26), arr(1 + columns, 27), arr(1 + columns, 28))
+
+                                                Sheet1.Range(Sheet1.Cells(5 + columns, 2), Sheet1.Cells(5 + columns, 29)) = MyArr
+                                            columns = columns + 1
+                                            TH = TH + 3
+                                        Next offset
+                                    Next z
+                                Next o
+                           
+                        Next f
+                        Next e
+                    Next d
+                Next c
+            Next a
+
+                                                                                        
+            Else
+ 
+                For a = 0 To 1 ' speed
+                    UI.Cells(10, 19).Value = speed(a)
+                    UI.Cells(17, 19).Value = type_car(b)
+                    UI.Cells(29, 19).Value = 2550
+                    UI.Cells(30, 19).Value = 1750
+                        
+                            UI.Cells(18, 19).Value = "Central"
+                            For d = 0 To 1 ' FF
+                                UI.Cells(19, 19).Value = FF(d)
+                                For e = 0 To 1 ' EI
+                         UI.Cells(20, 19).Value = EI(e)
+                                For f = 0 To 1 ' car_door_design
+                                    UI.Cells(21, 19).Value = car_door_design(f)
+                                    UI.Cells(22, 19).Value = car_ceiling(f)
+                                    UI.Cells(27, 19).Value = shaft_door(f)
+                                    
+                                        For o = 0 To 1 ' FB
+                                            UI.Cells(24, 19).Value = FB(o)
+                                            UI.Cells(31, 19).Value = "Back of the car"
+                                            For z = 0 To 1 ' seismic
+                                                UI.Cells(34, 19).Value = seismic(z)
+                                                TH = 6
+                                                            
+                                                For offset = 2 To 26
+                                                            
+                                                    UI.Cells(11, 19).Value = offset
+   
+                                                    UI.Cells(14, 19).Value = TH
+ 
+                                                    MyArr = Array()
+                                                    MyArr2 = Array()
+                                                    MyArr2 = Array(UI.Cells(9, 19), UI.Cells(10, 19), UI.Cells(11, 19), UI.Cells(12, 19), UI.Cells(13, 19), UI.Cells(14, 19), UI.Cells(15, 19), UI.Cells(16, 19), UI.Cells(17, 19), UI.Cells(18, 19), UI.Cells(19, 19), UI.Cells(20, 19), UI.Cells(21, 19), UI.Cells(22, 19), UI.Cells(23, 19), UI.Cells(24, 19), UI.Cells(25, 19), UI.Cells(26, 19), UI.Cells(27, 19), UI.Cells(28, 19), UI.Cells(29, 19), UI.Cells(30, 19), UI.Cells(31, 19), UI.Cells(32, 19), UI.Cells(33, 19), UI.Cells(34, 19), UI.Cells(35, 19), 1)
+
+                                                arr(1 + columns, 1) = MyArr2(0)
+                                                arr(1 + columns, 2) = MyArr2(1)
+                                                arr(1 + columns, 3) = MyArr2(2)
+                                                arr(1 + columns, 4) = MyArr2(3)
+                                                arr(1 + columns, 5) = MyArr2(4)
+                                                arr(1 + columns, 6) = MyArr2(5)
+                                                arr(1 + columns, 7) = MyArr2(6)
+                                                arr(1 + columns, 8) = MyArr2(7)
+                                                arr(1 + columns, 9) = MyArr2(8)
+                                                arr(1 + columns, 10) = MyArr2(9)
+                                                arr(1 + columns, 11) = MyArr2(10)
+                                                arr(1 + columns, 12) = MyArr2(11)
+                                                arr(1 + columns, 13) = MyArr2(12)
+                                                arr(1 + columns, 14) = MyArr2(13)
+                                                arr(1 + columns, 15) = MyArr2(14)
+                                                arr(1 + columns, 16) = MyArr2(15)
+                                                arr(1 + columns, 17) = MyArr2(16)
+                                                arr(1 + columns, 18) = MyArr2(17)
+                                                arr(1 + columns, 19) = MyArr2(18)
+                                                arr(1 + columns, 20) = MyArr2(19)
+                                                arr(1 + columns, 21) = MyArr2(20)
+                                                arr(1 + columns, 22) = MyArr2(21)
+                                                arr(1 + columns, 23) = MyArr2(22)
+                                                arr(1 + columns, 24) = MyArr2(23)
+                                                arr(1 + columns, 25) = MyArr2(24)
+                                                arr(1 + columns, 26) = MyArr2(25)
+                                                arr(1 + columns, 27) = MyArr2(26)
+                                                arr(1 + columns, 28) = MyArr2(27)
+                                                MyArr = Array(arr(1 + columns, 1), arr(1 + columns, 2), arr(1 + columns, 3), arr(1 + columns, 4), arr(1 + columns, 5), arr(1 + columns, 6), arr(1 + columns, 7), arr(1 + columns, 8), arr(1 + columns, 9), arr(1 + columns, 10), arr(1 + columns, 11), arr(1 + columns, 12), arr(1 + columns, 13), arr(1 + columns, 14), arr(1 + columns, 15), arr(1 + columns, 16), arr(1 + columns, 17), arr(1 + columns, 18), arr(1 + columns, 19), arr(1 + columns, 20), arr(1 + columns, 21), arr(1 + columns, 22), arr(1 + columns, 23), arr(1 + columns, 24), arr(1 + columns, 25), arr(1 + columns, 26), arr(1 + columns, 27), arr(1 + columns, 28))
+
+                                                Sheet1.Range(Sheet1.Cells(5 + columns, 2), Sheet1.Cells(5 + columns, 29)) = MyArr
+                                                    columns = columns + 1
+                                                    TH = TH + 3
+                                                Next offset
+                                            Next z
+                                        Next o
+                                    
+                                Next f
+                                Next e
+                            Next d
+                        
+                    Next a
+                End If
+            Next b
+                
+        End If
+
+Next k
+
+' for second lift in the group
+
+For k = 0 To 1  ' load
+
+
+UI.Cells(9, 20).Value = load(k)
+
+    If load(k) = 400 Then  ' from here
+        UI.Cells(17, 20).Value = "Deep"
+                
+        For a = 0 To 1 ' speed
+            UI.Cells(10, 20).Value = speed(a)
+                    
+            For c = 0 To 1 ' door opening
+                UI.Cells(18, 20).Value = type_door(c)
+                UI.Cells(19, 20).Value = "No"
+                For e = 0 To 1 ' EI
+                    UI.Cells(20, 20).Value = EI(e)
+                    For f = 0 To 1 ' car_door_design
+                        UI.Cells(21, 20).Value = car_door_design(f)
+                        UI.Cells(22, 20).Value = car_ceiling(f)
+                        UI.Cells(27, 20).Value = shaft_door(f)
+                        UI.Cells(24, 20).Value = "No"
+                                    For r = 0 To 1 ' CW_position
+                                        If CW_position(r) = "Back of the car" Then
+                                            UI.Cells(29, 20).Value = 1750
+                                            UI.Cells(30, 20).Value = 1550
+                                        Else
+                                            UI.Cells(29, 20).Value = 1550
+                                            UI.Cells(30, 20).Value = 1750
+                                        End If
+                                            UI.Cells(31, 20).Value = CW_position(r)
+                                        For z = 0 To 1 ' seismic
+                                            UI.Cells(34, 20).Value = seismic(z)
+                                            TH = 6
+                                                            
+                                            For offset = 2 To 26
+                                                            
+                                                UI.Cells(11, 20).Value = offset
+
+                                                UI.Cells(14, 20).Value = TH
+ 
+                                                MyArr = Array()
+                                                MyArr2 = Array()
+                                                MyArr2 = Array(UI.Cells(9, 20), UI.Cells(10, 20), UI.Cells(11, 20), UI.Cells(12, 20), UI.Cells(13, 20), UI.Cells(14, 20), UI.Cells(15, 20), UI.Cells(16, 20), UI.Cells(17, 20), UI.Cells(18, 20), UI.Cells(19, 20), UI.Cells(20, 20), UI.Cells(21, 20), UI.Cells(22, 20), UI.Cells(23, 20), UI.Cells(24, 20), UI.Cells(25, 20), UI.Cells(26, 20), UI.Cells(27, 20), UI.Cells(28, 20), UI.Cells(29, 20), UI.Cells(30, 20), UI.Cells(31, 20), UI.Cells(32, 20), UI.Cells(33, 20), UI.Cells(34, 20), UI.Cells(35, 20), 2)
+
+                                                arr(1 + columns, 1) = MyArr2(0)
+                                                arr(1 + columns, 2) = MyArr2(1)
+                                                arr(1 + columns, 3) = MyArr2(2)
+                                                arr(1 + columns, 4) = MyArr2(3)
+                                                arr(1 + columns, 5) = MyArr2(4)
+                                                arr(1 + columns, 6) = MyArr2(5)
+                                                arr(1 + columns, 7) = MyArr2(6)
+                                                arr(1 + columns, 8) = MyArr2(7)
+                                                arr(1 + columns, 9) = MyArr2(8)
+                                                arr(1 + columns, 10) = MyArr2(9)
+                                                arr(1 + columns, 11) = MyArr2(10)
+                                                arr(1 + columns, 12) = MyArr2(11)
+                                                arr(1 + columns, 13) = MyArr2(12)
+                                                arr(1 + columns, 14) = MyArr2(13)
+                                                arr(1 + columns, 15) = MyArr2(14)
+                                                arr(1 + columns, 16) = MyArr2(15)
+                                                arr(1 + columns, 17) = MyArr2(16)
+                                                arr(1 + columns, 18) = MyArr2(17)
+                                                arr(1 + columns, 19) = MyArr2(18)
+                                                arr(1 + columns, 20) = MyArr2(19)
+                                                arr(1 + columns, 21) = MyArr2(20)
+                                                arr(1 + columns, 22) = MyArr2(21)
+                                                arr(1 + columns, 23) = MyArr2(22)
+                                                arr(1 + columns, 24) = MyArr2(23)
+                                                arr(1 + columns, 25) = MyArr2(24)
+                                                arr(1 + columns, 26) = MyArr2(25)
+                                                arr(1 + columns, 27) = MyArr2(26)
+                                                arr(1 + columns, 28) = MyArr2(27)
+                                                MyArr = Array(arr(1 + columns, 1), arr(1 + columns, 2), arr(1 + columns, 3), arr(1 + columns, 4), arr(1 + columns, 5), arr(1 + columns, 6), arr(1 + columns, 7), arr(1 + columns, 8), arr(1 + columns, 9), arr(1 + columns, 10), arr(1 + columns, 11), arr(1 + columns, 12), arr(1 + columns, 13), arr(1 + columns, 14), arr(1 + columns, 15), arr(1 + columns, 16), arr(1 + columns, 17), arr(1 + columns, 18), arr(1 + columns, 19), arr(1 + columns, 20), arr(1 + columns, 21), arr(1 + columns, 22), arr(1 + columns, 23), arr(1 + columns, 24), arr(1 + columns, 25), arr(1 + columns, 26), arr(1 + columns, 27), arr(1 + columns, 28))
+
+                                                Sheet1.Range(Sheet1.Cells(5 + columns, 2), Sheet1.Cells(5 + columns, 29)) = MyArr
+                                                columns = columns + 1
+                                                TH = TH + 3
+                                                    
+                                            Next offset
+                                        Next z
+                                    Next r
+                               
+                            
+                        Next f
+                    Next e
+                Next c
+            Next a
+    End If
+
+    If load(k) = 1000 Then
+        For b = 0 To 1
+            If type_car(b) = "Deep" Then
+                    
+                For a = 0 To 1 ' speed
+                UI.Cells(10, 20).Value = speed(a)
+                    
+                UI.Cells(17, 20).Value = type_car(b)
+                UI.Cells(29, 20).Value = 1750
+                UI.Cells(30, 20).Value = 2550
+                For c = 0 To 1 ' door opening
+                    UI.Cells(18, 20).Value = type_door(c)
+                    For d = 0 To 1 ' FF
+                        UI.Cells(19, 20).Value = FF(d)
+                         For e = 0 To 1 ' EI
+                         UI.Cells(20, 20).Value = EI(e)
+                        For f = 0 To 1 ' car_door_design
+                            UI.Cells(21, 20).Value = car_door_design(f)
+                            UI.Cells(22, 20).Value = car_ceiling(f)
+                            UI.Cells(27, 20).Value = shaft_door(f)
+                            
+                                    UI.Cells(24, 20).Value = "No"
+                                    UI.Cells(31, 20).Value = "Side"
+                                    For z = 0 To 1 ' seismic
+                                        UI.Cells(34, 20).Value = seismic(z)
+                                        TH = 6
+                                                            
+                                        For offset = 2 To 26
+                                                            
+                                            UI.Cells(11, 20).Value = offset
+   
+                                            UI.Cells(14, 20).Value = TH
+
+                                            MyArr = Array()
+                                            MyArr2 = Array()
+                                            MyArr2 = Array(UI.Cells(9, 20), UI.Cells(10, 20), UI.Cells(11, 20), UI.Cells(12, 20), UI.Cells(13, 20), UI.Cells(14, 20), UI.Cells(15, 20), UI.Cells(16, 20), UI.Cells(17, 20), UI.Cells(18, 20), UI.Cells(19, 20), UI.Cells(20, 20), UI.Cells(21, 20), UI.Cells(22, 20), UI.Cells(23, 20), UI.Cells(24, 20), UI.Cells(25, 20), UI.Cells(26, 20), UI.Cells(27, 20), UI.Cells(28, 20), UI.Cells(29, 20), UI.Cells(30, 20), UI.Cells(31, 20), UI.Cells(32, 20), UI.Cells(33, 20), UI.Cells(34, 20), UI.Cells(35, 20), 2)
+
+                                                arr(1 + columns, 1) = MyArr2(0)
+                                                arr(1 + columns, 2) = MyArr2(1)
+                                                arr(1 + columns, 3) = MyArr2(2)
+                                                arr(1 + columns, 4) = MyArr2(3)
+                                                arr(1 + columns, 5) = MyArr2(4)
+                                                arr(1 + columns, 6) = MyArr2(5)
+                                                arr(1 + columns, 7) = MyArr2(6)
+                                                arr(1 + columns, 8) = MyArr2(7)
+                                                arr(1 + columns, 9) = MyArr2(8)
+                                                arr(1 + columns, 10) = MyArr2(9)
+                                                arr(1 + columns, 11) = MyArr2(10)
+                                                arr(1 + columns, 12) = MyArr2(11)
+                                                arr(1 + columns, 13) = MyArr2(12)
+                                                arr(1 + columns, 14) = MyArr2(13)
+                                                arr(1 + columns, 15) = MyArr2(14)
+                                                arr(1 + columns, 16) = MyArr2(15)
+                                                arr(1 + columns, 17) = MyArr2(16)
+                                                arr(1 + columns, 18) = MyArr2(17)
+                                                arr(1 + columns, 19) = MyArr2(18)
+                                                arr(1 + columns, 20) = MyArr2(19)
+                                                arr(1 + columns, 21) = MyArr2(20)
+                                                arr(1 + columns, 22) = MyArr2(21)
+                                                arr(1 + columns, 23) = MyArr2(22)
+                                                arr(1 + columns, 24) = MyArr2(23)
+                                                arr(1 + columns, 25) = MyArr2(24)
+                                                arr(1 + columns, 26) = MyArr2(25)
+                                                arr(1 + columns, 27) = MyArr2(26)
+                                                arr(1 + columns, 28) = MyArr2(27)
+                                                MyArr = Array(arr(1 + columns, 1), arr(1 + columns, 2), arr(1 + columns, 3), arr(1 + columns, 4), arr(1 + columns, 5), arr(1 + columns, 6), arr(1 + columns, 7), arr(1 + columns, 8), arr(1 + columns, 9), arr(1 + columns, 10), arr(1 + columns, 11), arr(1 + columns, 12), arr(1 + columns, 13), arr(1 + columns, 14), arr(1 + columns, 15), arr(1 + columns, 16), arr(1 + columns, 17), arr(1 + columns, 18), arr(1 + columns, 19), arr(1 + columns, 20), arr(1 + columns, 21), arr(1 + columns, 22), arr(1 + columns, 23), arr(1 + columns, 24), arr(1 + columns, 25), arr(1 + columns, 26), arr(1 + columns, 27), arr(1 + columns, 28))
+
+                                                Sheet1.Range(Sheet1.Cells(5 + columns, 2), Sheet1.Cells(5 + columns, 29)) = MyArr
+                                            columns = columns + 1
+                                            TH = TH + 3
+                                        Next offset
+                                    Next z
+                                
+                           
+                        Next f
+                        Next e
+                    Next d
+                Next c
+            Next a
+
+                                                                                        
+            Else
+ 
+                For a = 0 To 1 ' speed
+                    UI.Cells(10, 20).Value = speed(a)
+                    UI.Cells(17, 20).Value = type_car(b)
+                    UI.Cells(29, 20).Value = 2550
+                    UI.Cells(30, 20).Value = 1750
+                        
+                            UI.Cells(18, 20).Value = "Central"
+                            For d = 0 To 1 ' FF
+                                UI.Cells(19, 20).Value = FF(d)
+                                For e = 0 To 1 ' EI
+                         UI.Cells(20, 20).Value = EI(e)
+                                For f = 0 To 1 ' car_door_design
+                                    UI.Cells(21, 20).Value = car_door_design(f)
+                                    UI.Cells(22, 20).Value = car_ceiling(f)
+                                    UI.Cells(27, 20).Value = shaft_door(f)
+                                    
+                                        
+                                            UI.Cells(24, 20).Value = "No"
+                                            UI.Cells(31, 20).Value = "Back of the car"
+                                            For z = 0 To 1 ' seismic
+                                                UI.Cells(34, 20).Value = seismic(z)
+                                                TH = 6
+                                                            
+                                                For offset = 2 To 26
+                                                            
+                                                    UI.Cells(11, 20).Value = offset
+   
+                                                    UI.Cells(14, 20).Value = TH
+ 
+                                                    MyArr = Array()
+                                                    MyArr2 = Array()
+                                                    MyArr2 = Array(UI.Cells(9, 20), UI.Cells(10, 20), UI.Cells(11, 20), UI.Cells(12, 20), UI.Cells(13, 20), UI.Cells(14, 20), UI.Cells(15, 20), UI.Cells(16, 20), UI.Cells(17, 20), UI.Cells(18, 20), UI.Cells(19, 20), UI.Cells(20, 20), UI.Cells(21, 20), UI.Cells(22, 20), UI.Cells(23, 20), UI.Cells(24, 20), UI.Cells(25, 20), UI.Cells(26, 20), UI.Cells(27, 20), UI.Cells(28, 20), UI.Cells(29, 20), UI.Cells(30, 20), UI.Cells(31, 20), UI.Cells(32, 20), UI.Cells(33, 20), UI.Cells(34, 20), UI.Cells(35, 20), 2)
+
+                                                arr(1 + columns, 1) = MyArr2(0)
+                                                arr(1 + columns, 2) = MyArr2(1)
+                                                arr(1 + columns, 3) = MyArr2(2)
+                                                arr(1 + columns, 4) = MyArr2(3)
+                                                arr(1 + columns, 5) = MyArr2(4)
+                                                arr(1 + columns, 6) = MyArr2(5)
+                                                arr(1 + columns, 7) = MyArr2(6)
+                                                arr(1 + columns, 8) = MyArr2(7)
+                                                arr(1 + columns, 9) = MyArr2(8)
+                                                arr(1 + columns, 10) = MyArr2(9)
+                                                arr(1 + columns, 11) = MyArr2(10)
+                                                arr(1 + columns, 12) = MyArr2(11)
+                                                arr(1 + columns, 13) = MyArr2(12)
+                                                arr(1 + columns, 14) = MyArr2(13)
+                                                arr(1 + columns, 15) = MyArr2(14)
+                                                arr(1 + columns, 16) = MyArr2(15)
+                                                arr(1 + columns, 17) = MyArr2(16)
+                                                arr(1 + columns, 18) = MyArr2(17)
+                                                arr(1 + columns, 19) = MyArr2(18)
+                                                arr(1 + columns, 20) = MyArr2(19)
+                                                arr(1 + columns, 21) = MyArr2(20)
+                                                arr(1 + columns, 22) = MyArr2(21)
+                                                arr(1 + columns, 23) = MyArr2(22)
+                                                arr(1 + columns, 24) = MyArr2(23)
+                                                arr(1 + columns, 25) = MyArr2(24)
+                                                arr(1 + columns, 26) = MyArr2(25)
+                                                arr(1 + columns, 27) = MyArr2(26)
+                                                arr(1 + columns, 28) = MyArr2(27)
+                                                MyArr = Array(arr(1 + columns, 1), arr(1 + columns, 2), arr(1 + columns, 3), arr(1 + columns, 4), arr(1 + columns, 5), arr(1 + columns, 6), arr(1 + columns, 7), arr(1 + columns, 8), arr(1 + columns, 9), arr(1 + columns, 10), arr(1 + columns, 11), arr(1 + columns, 12), arr(1 + columns, 13), arr(1 + columns, 14), arr(1 + columns, 15), arr(1 + columns, 16), arr(1 + columns, 17), arr(1 + columns, 18), arr(1 + columns, 19), arr(1 + columns, 20), arr(1 + columns, 21), arr(1 + columns, 22), arr(1 + columns, 23), arr(1 + columns, 24), arr(1 + columns, 25), arr(1 + columns, 26), arr(1 + columns, 27), arr(1 + columns, 28))
+
+                                                Sheet1.Range(Sheet1.Cells(5 + columns, 2), Sheet1.Cells(5 + columns, 29)) = MyArr
+                                                    columns = columns + 1
+                                                    TH = TH + 3
+                                                Next offset
+                                            Next z
+                                       
+                                    
+                                Next f
+                                Next e
+                            Next d
+                        
+                    Next a
+                End If
+            Next b
+                
+        End If
+
+Next k
