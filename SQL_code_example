@@ -1,0 +1,39 @@
+SET NOCOUNT ON;
+
+WITH summary AS
+
+(
+
+SELECT DISTINCT RANK() OVER(PARTITION by b.publisher_id ORDER BY b.book_id DESC) as
+
+num,b.publisher_id, b.book_id, COUNT(DISTINCT l.user_id) as Number_of_readers
+
+FROM
+
+books b
+
+inner join libraries l on b.book_id=l.book_id
+
+inner join (select user_id, book_id, MAX(end_offset) as max_end_offset, MIN(start_offset)
+
+as min_start_offset FROM readings GROUP BY user_id, book_id) r on b.book_id=r.book_id
+
+inner join (select user_id,book_id,[('add' | 'remove')] from actions where [('add' | 
+
+'remove')]=1) a on b.book_id=a.book_id
+
+WHERE (r.max_end_offset-r.min_start_offset)>10 -- condition that user has read at least 
+
+10 pages to include the book into statistics
+
+GROUP BY b.publisher_id, b.book_id
+
+)
+
+SELECT s.publisher_id, s.book_id, s.Number_of_readers
+
+FROM summary s
+
+WHERE s.num<=10 --top-10 books choice
+
+SET NOCOUNT OFF;
