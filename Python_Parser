@@ -2,22 +2,26 @@
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
-import csv
-import urllib.parse
-import urllib.request
-import urllib.error
-
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException,ElementNotVisibleException,TimeoutException
+import re, time, urllib.parse, urllib.request, urllib.error, csv
 
 """ All input - our vacancy query and place to save the file with results """
-query='Инженер' # what we are looking for
-path=r'C:\Users\Пашка\Documents\HH_parsed.csv' #file folder
-scope=150 # How many pages we analyze
+# Parsing
+query='xxxx' # what we are looking for
+path=r'xxx' #file folder
+scope=50 # How many pages we analyze
+path_to_chromedriver=r'C:\chromedriver.exe'
+# Auto-application
+resume_name='xxxxx'
+cover_letter='Hello! I like this vacancy!'
+
+my_username='xxxx@gmail.com'
+my_password='xxx'
+
 """ ------------------------------"""
-
-
-
-query = 'инженер'
- 
+base_url_0='https://www.hh.ru/account/login'
 base_url = ('http://hh.ru/search/vacancy?text={}&'
        'only_with_salary=false&area=1&enable_snippets=true&'
        'clusters=true&salary='.format(urllib.parse.quote(query))) # cyrillic decoded by urllin.parse.quote() OR it is possible to use 'requests' library #First page
@@ -26,13 +30,16 @@ base_url = ('http://hh.ru/search/vacancy?text={}&'
 base_url2= ('http://hh.ru/search/vacancy?'
             'text={}&enable_snippets=true&clusters=true&area=1&'.format(format(urllib.parse.quote(query))))  #all other pages incremented by page=1,2....
 
+apply_url='http://hh.ru/applicant/vacancy_response?vacancyId='
+
+
 
 def get_html(url):  # read url
     global response
     try:
         response=urllib.request.urlopen(url)
     except urllib.error.HTTPError:
-        print('FINISHED (forget error message)')
+        pass
     return response.read()
 
 def parse(html): # analyze HTML
@@ -47,33 +54,77 @@ def parse(html): # analyze HTML
         'salary': [salary.text for salary in row.find_all('div', class_='b-vacancy-list-salary')], 
         'description': [description.text for description in row.find_all('div', class_='search-result-item__snippet')], 
         'publication_date': [pub.text for pub in row.find_all('span', class_="b-vacancy-list-date")],
-        'link': [link['href'] for link in row.find_all('a', class_="search-result-item__name search-result-item__name_standard",href=True)]
+        'link': [re.search(r'.+?(?=\?)',link['href']).group()  for link in row.find_all('a', class_="search-result-item__name search-result-item__name_standard",href=True)]
         })
+        
+    print('Все вакансии обработаны')
         
     return vacancies    
 
 def csv_file(vacancies):  # We save all vacancies in .csv file to analyze in Excel afterwards
-    with open(path,'w') as csvfile:
+    with open(path,'w',encoding='cp1251') as csvfile:
         writer=csv.writer(csvfile,delimiter=';',lineterminator='\n')
         writer.writerow(('Компания','Зарплата','Дата вакансии','Имя позиции','Описание','Ссылка'))
         for vacancy in vacancies:
             writer.writerow((vacancy['company'],', '.join(vacancy['salary']),', '.join(vacancy['publication_date']),', '.join(vacancy['position']),', '.join(vacancy['description']),', '.join(vacancy['link'])))
+    print('Файл с вакансиями сохранен')
+    csvfile.close()
+    
+
         
+def login_apply(url, vacancies):
+    
+    driver = webdriver.Chrome(path_to_chromedriver)
+    driver.get(base_url_0)
+    
+    
+    username = driver.find_element_by_name('username')
+    password = driver.find_element_by_name('password')
+    username.send_keys(my_username)
+    password.send_keys(my_password)
+    driver.find_element_by_xpath("//input[@type='submit']").click()
+    
+    for vacancy in vacancies:
+        
+        driver.get(apply_url+re.search(r'[0-9]+',vacancy['link'][0]).group())
+        no_mistake=True
+        while no_mistake:
+            try:
+                try:
+                    letter=driver.find_element_by_name('letter')
+                    letter.send_keys(cover_letter) 
+                except (ElementNotVisibleException,TimeoutException) as e:
+                    pass
+                try:
+                    driver.find_element_by_xpath("//input[@type='submit']").click()
+                    no_mistake=True
+                except (ElementNotVisibleException,TimeoutException) as e:
+                    no_mistake=False
+                    time.sleep(2)
+                
+            except (NoSuchElementException, TimeoutException) as e:  
+                no_mistake=False
+                time.sleep(2)
+                
+    driver.close()
+    print('БОТ завершил свою работу')
 
 
 def main():
     
-    #print(parse(get_html('http://hh.ru/search/vacancy?clusters=true&area=1&enable_snippets=true&text=%D0%B8%D0%BD%D0%B6%D0%B5%D0%BD%D0%B5%D1%80&page=100')))
     vacancies=[]
     
     for i in range(1,scope):
-        print('Обработано %d страниц' % (i),'(%.1f%%)' % (i*100/scope))
+        print('Обработано %d страниц выдачи' % (i) )
         if i==1:
             vacancies.extend(parse(get_html(base_url)))
         else:
             vacancies.extend(parse(get_html(base_url2+'page=%s' % i)))
-    print(vacancies)
+            
     csv_file(vacancies)   
+    
+    login_apply(base_url_0,vacancies)
+    
 
 if __name__=='__main__':
     main()
