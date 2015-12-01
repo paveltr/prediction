@@ -1,0 +1,215 @@
+#!/usr/bin/env python
+# -*- coding: cp1251 -*-
+
+from bs4 import BeautifulSoup
+import urllib.error, csv, re
+import urllib.request
+from http.cookiejar import CookieJar
+
+
+def get_html(url):
+    cookie = CookieJar()
+    proxy_info = {
+        'user': 'troshenkov',
+        'pass': 'Qwerty12',
+        'host': 'tmg-array.co.vectis.local',
+        'port': 8080
+    }
+
+    # build a new opener that uses a proxy requiring authorization
+    proxy_support = urllib.request.ProxyHandler({"http":
+                                                     "http://%(user)s:%(pass)s@%(host)s:%(port)d" % proxy_info})
+    cookie_handler = urllib.request.HTTPCookieProcessor(cookie)
+
+    opener = urllib.request.build_opener(proxy_support)
+    opener.add_handler(cookie_handler)
+
+    # install it
+    urllib.request.install_opener(opener)
+
+    req = urllib.request.urlopen(url)
+
+    html = req.read()
+
+    return html
+
+
+def ozon(html):
+    soup = BeautifulSoup(html, "html.parser")
+    table = soup.find_all('span', class_='pluralGoods')
+    goods = "".join(l for l in re.findall(r'[0-9]', table[0].text))
+
+    return goods
+
+
+class detskyi_mir():
+
+    def parse_detmir(self, html):
+        soup = BeautifulSoup(html, "html.parser")
+        table = soup.find('div', class_='catalog')
+        goods = table.find_all('div', class_='b-goods_card_item')
+
+        return len(goods)
+
+    def detmir(self, url):
+
+        counter = 1
+        checker = 1
+        result = -1
+        while checker > 0:
+            try:
+                if counter == 1:
+                    checker = self.parse_detmir(get_html(url))
+                    result = result + checker
+                else:
+                    checker = self.parse_detmir(get_html(url + 'page/' + str(counter) + '/'))
+                    result = result + checker
+
+            except:
+                checker = 0
+                break
+
+            counter += 1
+        return result
+
+
+def mytoys(html):
+    soup = BeautifulSoup(html, "html.parser")
+    table = soup.find('div', class_='productOverall')
+    goods = "".join(l for l in re.findall(r'[0-9]', table.text))
+
+    return goods
+
+
+class esky():
+
+    def eskyy(self, html):
+
+        soup = BeautifulSoup(html, "html.parser")
+        table = soup.find_all('li', class_='content__category-item')
+        goods = len(table)
+        return goods
+
+    def n_pages(self, html):
+
+        soup = BeautifulSoup(html, "html.parser")
+        table = soup.find_all('a', class_='faces-page-item')
+        s = []
+        max = 0
+        for t in table:
+            if int(t.text) >= max:
+                max = int(t.text)
+
+        return max
+
+    def parse_esky(self, url):
+
+        counter = 1
+        result = 0
+        pages = self.n_pages(get_html(url))
+        if pages == 0:
+            pages = 1
+        while pages - counter >= 0:
+
+            if counter == 1:
+                checker = self.eskyy(get_html(url))
+                result = result + checker
+            else:
+                checker = self.eskyy(get_html(url + '?PAGEN_1=' + str(counter)))
+                result = result + checker
+
+            counter += 1
+        return result
+
+
+def wiki(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    table = soup.find('div', class_='catalog-header')
+    goods = table.find_all('span', class_='catalog-header__count')
+    return goods[0].text
+
+
+def diapers(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    table = soup.find('div', class_='pull-left')
+    goods = table.find('span', class_='searched-stats').text
+
+    if not re.search('[A-Za-z]', goods):
+        return goods
+    else:
+        goods = table.find('span' ).text
+        str = goods.split('of')
+        return "".join(l for l in re.findall(r'[0-9]', str[1]))
+
+
+def open_csv(path):
+    output = []
+    f = open(path, 'rU')  # open the file in read universal mode
+    next(f, None)  # ignoring headers
+    for line in f:
+        cells = line.split(";")
+        output.append({'site': cells[0], 'category': cells[1], 'link': cells[2], 'class': cells[3], 'method': cells[4],
+                       'type': cells[5]})  # since we want the first, second and third column
+
+    f.close()
+    return output
+
+
+def save(path, site, link, category, result):
+    with open(path, 'a') as csvfile:
+        writer = csv.writer(csvfile, delimiter=';', lineterminator='\n')
+
+        writer.writerow(
+            (site, link, category, result)
+
+        )
+
+    pass
+
+
+def main():
+    path = 'dictionary_kids.csv'  # dictionary with links
+
+    path_result = 'sku_kids.csv'  # result file
+
+    set_functions = ({
+
+        'http://www.mytoys.ru/': mytoys,
+        'http://www.ozon.ru/': ozon,
+        'http://www.esky.ru/': esky,
+        'http://www.detmir.ru/': detskyi_mir,
+        'http://www.wikimart.ru/': wiki,
+        'http://www.diapers.com/': diapers
+
+    })
+
+    fd = open_csv(path)
+    counter = 0
+
+    while (len(fd) - counter > 0):
+
+        if set_functions.get(fd[counter]['site']) is not None:
+
+            if fd[counter]['type'].strip() == 'function':
+                html_link = get_html(fd[counter]['link'])  # get html data from url
+                a = set_functions.get(fd[counter]['site'])(html_link)  # apply function
+                save(path_result, fd[counter]['site'].strip(), fd[counter]['link'].strip(),
+                     fd[counter]['category'].strip(), a)  # saving result
+
+                print(a)
+
+            if fd[counter]['type'].strip() == 'class':
+                a = set_functions.get(fd[counter]['site'])()  # create a class object
+                method = getattr(a,
+                                 fd[counter]['method'])  # creating a method with given class and corresponding method
+                result = method(fd[counter]['link'])  # result
+                save(path_result, fd[counter]['site'].strip(), fd[counter]['link'].strip(),
+                     fd[counter]['category'].strip(), result)  # saving result
+
+                print(result)
+
+        counter += 1
+
+
+if __name__ == '__main__':
+    main()
